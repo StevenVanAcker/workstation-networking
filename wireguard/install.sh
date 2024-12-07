@@ -24,11 +24,14 @@ bw --session $BW_SESSION_KEY list --folderid $FOLDERID items > items.json
 # remove files from /etc
 sudo rm -f /etc/NetworkManager/system-connections/$FILEPREFIX*$FILESUFFIX
 
-# copy files from staging
-sudo cp $STAGING/$FILEPREFIX*$FILESUFFIX /etc/NetworkManager/system-connections/
+if [ -e $STAGING/$FILEPREFIX*$FILESUFFIX ];
+then
+	# copy files from staging
+	sudo cp $STAGING/$FILEPREFIX*$FILESUFFIX /etc/NetworkManager/system-connections/
 
-# fix permissions
-sudo chmod 600 /etc/NetworkManager/system-connections/$FILEPREFIX*$FILESUFFIX
+	# fix permissions
+	sudo chmod 600 /etc/NetworkManager/system-connections/$FILEPREFIX*$FILESUFFIX
+fi
 
 # reload NM
 sudo systemctl restart NetworkManager
