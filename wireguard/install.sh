@@ -12,11 +12,11 @@ rm -f folders.json items.json
 rm -rf $STAGING
 
 # Get the folder ID for the wireguard folder
-bw --session $BW_SESSION_KEY list folders > folders.json
+bw list folders > folders.json
 FOLDERID=$(jq -r ".[] | select(.name == \"$FOLDERNAME\") | .id" folders.json)
 
 # Get all items in this folder
-bw --session $BW_SESSION_KEY list --folderid $FOLDERID items > items.json
+bw list --folderid $FOLDERID items > items.json
 
 # pass JSON to python, which creates file in a staging directory
 ./generate-wireguard.py items.json --hostname=$(hostname) --directory=$STAGING --prefix=$FILEPREFIX --suffix=$FILESUFFIX
