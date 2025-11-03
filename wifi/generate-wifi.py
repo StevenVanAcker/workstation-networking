@@ -91,7 +91,8 @@ def generate_config(name: str, optstr: str,
     options = {
         "Name": name,
         "Type": "wpa-psk",
-        "Autoconnect": "true"
+        "Autoconnect": "true",
+        "ignore": False
     }
     for line in optstr.split("\n"):
         if line.strip() == "":
@@ -103,18 +104,22 @@ def generate_config(name: str, optstr: str,
         value = parts[1].strip()
         options[key] = value
 
-    fn = {
-        "wpa-psk": generate_config_wpa_psk,
-        "wpa-eap": generate_config_wpa_eap
-    }[options["Type"]]
+    if not options["ignore"]:
+        fn = {
+            "wpa-psk": generate_config_wpa_psk,
+            "wpa-eap": generate_config_wpa_eap
+        }[options["Type"]]
 
-    filedata, uuid = fn(options)
+        filedata, uuid = fn(options)
 
-    os.makedirs(outdir, exist_ok=True)
-    outfile = os.path.join(outdir, f"{prefix}{uuid}{suffix}")
+        os.makedirs(outdir, exist_ok=True)
+        outfile = os.path.join(outdir, f"{prefix}{uuid}{suffix}")
 
-    with open(outfile, "w") as fp:
-        fp.write(filedata)
+        with open(outfile, "w") as fp:
+            fp.write(filedata)
+    else:
+        print(f"Ignoring config for {name}")
+
 
 
 if __name__ == "__main__":
